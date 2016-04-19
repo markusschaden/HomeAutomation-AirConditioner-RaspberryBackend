@@ -36,10 +36,6 @@ enum class SIX_TH_SENSE {
 enum class POWER {
 	ON = 0x0, OFF = 0x4
 };
-auto START_1 = std::bitset<4>(12);
-auto START_2 = std::bitset<4>(1);
-auto START_3 = std::bitset<4>(6);
-auto START_4 = std::bitset<4>(0);
 
 struct Command {
 
@@ -57,6 +53,13 @@ struct Command {
 		jet = JET::JET_OFF;
 		swing = SWING::SWING_OFF;
 
+		//start
+		auto part1 = std::bitset<4>(12);
+		auto part2 = std::bitset<4>(1);
+		auto part3 = std::bitset<4>(6);
+		auto part4 = std::bitset<4>(0);
+
+		//controlling
 		auto powerbytes = reverse(std::bitset<4>(static_cast<unsigned>(power)));
 		auto fanspeedbytes = reverse(std::bitset<4>(static_cast<unsigned>(fan_speed)));
 		auto part5 = powerbytes | fanspeedbytes;
@@ -74,6 +77,7 @@ struct Command {
 		auto part15 = std::bitset<4>(1);
 		auto part16 = std::bitset<4>(4);
 
+		//end
 		auto part17 = std::bitset<4>(0);
 		auto part18 = std::bitset<4>(0);
 		auto part19 = std::bitset<4>(0);
@@ -85,24 +89,20 @@ struct Command {
 		auto part25 = std::bitset<4>(0);
 		auto part26 = std::bitset<4>(0);
 
+		//checksum
 		auto part27 = part5 ^ part7 ^ part9 ^ part11 ^ part13 ^ part15 ^ part17 ^ part19 ^ part21 ^ part23 ^ part25;
 		auto part28 = part6 ^ part8 ^ part10 ^ part12 ^ part14 ^ part16 ^ part18 ^ part20 ^ part22 ^ part24 ^ part26;
 
-		std::vector<std::bitset<4>> list { START_1, START_2, START_3, START_4, part5, part6, part7, part8, part9, part10, part11, part12, part13,
+		std::vector<std::bitset<4>> list { part1, part2, part3, part4, part5, part6, part7, part8, part9, part10, part11, part12, part13,
 				part14, part15, part16, part17, part18, part19, part20, part21, part22, part23, part24, part25, part26, part27, part28 };
 
 		std::ostringstream oss;
-
 		std::for_each(list.begin(), list.end(), [&](auto item){oss << item << " ";});
 
 		return oss.str();
 	}
 
 private:
-	void calculateChecksum() {
-
-	}
-
 	template<size_t n>
 	std::bitset<n> reverse(std::bitset<n> set) {
 		std::bitset<n> result;
@@ -111,11 +111,6 @@ private:
 			result[i] = set[n - i - 1];
 
 		return result;
-	}
-
-	std::bitset<4> calculateChecksum1() {
-
-		return std::bitset<4> { };
 	}
 };
 
